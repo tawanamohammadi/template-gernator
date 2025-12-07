@@ -1,0 +1,5 @@
+{
+  "name": "Looka VPN Dashboard",
+  "description": "A modern, dark-themed VPN dashboard for managing subscriptions, viewing data usage, and accessing connection configurations.",
+  "requestFramePermissions": []
+}
