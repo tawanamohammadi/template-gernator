@@ -2,19 +2,24 @@ import React from 'react';
 
 export interface UserData {
   username: string;
+  plan: string;
   status: 'active' | 'inactive';
   usedTraffic: string;
   totalTraffic: string;
   usedPercentage: number;
   expiryDate: string;
   daysRemaining: string | number;
+  supportLink: string;
+  channelLink: string;
+  subscriptionUrl: string;
+  userId: string;
 }
 
 export interface ConfigItem {
   id: string;
   name: string;
   url: string;
-  flag?: string; // Emoji flag
+  countryCode?: string; // ISO 2-letter code (e.g., 'us', 'de')
 }
 
 export interface AppRecommendation {
@@ -29,7 +34,11 @@ export interface AppRecommendation {
 export interface OsData {
   id: 'ios' | 'android' | 'windows';
   label: string;
-  // Fix: React namespace requires import from 'react'
   icon: React.ReactNode;
   apps: AppRecommendation[];
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
 }
