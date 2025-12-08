@@ -1,0 +1,74 @@
+
+من یک راهنمای برای تو میزارم ایا میتونی صدرصد دقیق بدون خراب کردن ظاهر و قابلیت های فعلی این مستندات رو پیاده کنی تا برنامه کامل بشه؟ این فایل راهنما
+خط به خط مستندات رو با دقت مطالعه کن
+MARZBAN_INTEGRATION_GUIDE_FOR_AI_.txt
+Gemini 3 Pro Preview
+Running for 164s
+lightbulb
+Thought for 141 seconds
+Initiating React Integration
+I'm currently focused on the challenge of integrating the existing React app with the Marzban Panel backend. I've been studying the provided documentation, which details how Marzban injects data using Jinja2 templates. My goal is to modify the React app to consume this injected data, but I still haven't determined how to proceed.
+Exploring Data Injection
+I've been analyzing the unique data injection strategy Marzban utilizes. Specifically, I'm focusing on how Jinja2 templates are used to populate index.html. My approach involves transforming the injected variables into a globally accessible JavaScript object, likely window.MARZBAN_DATA. For development, I'm considering using mock data to simulate the server-rendered variables during local development and testing. I'm aiming to keep all current features and appearance.
+Developing Fallback Mechanism
+I'm now prioritizing a robust fallback mechanism for when window.MARZBAN_DATA is unavailable. This will involve checking for the global object and, if missing, defaulting to the mock data stored in constants.ts. Subsequently, I'll update types.ts or create mappings to align Marzban's data structure with the app's existing UserData interface. In a separate step, I will handle the data transformation, including formatting bytes to strings and timestamps to dates, as required. My next focus is on integrating this approach within the app's state management.
+Integrating Jinja2 Variables
+I've been working on integrating Jinja2 variables. I've added a <script> tag to index.html to store the Jinja2 variables as window.MARZBAN_DATA, assuming that the built index.html is the target template. To make local development work, I will wrap the Jinja2 syntax in HTML-valid comments, so the development server will still run and inject a default. I'll define an interface for the raw Marzban data in types.ts, which I'll use to map from the global variables to the component data.
+Mapping Data Structures
+I'm now focusing on mapping the Marzban data structure to existing types in constants.ts. Specifically, I'm refactoring it to check window.MARZBAN_DATA. If it exists, I'll parse and map it to USER_DATA and CONFIGS; otherwise, I'll keep the mock data for local development. I've also modified index.html to inject Jinja2 variables into a script tag as window.MARZBAN_DATA, so the React app can access them.
+Implementing Local Development
+I'm now refining the local development strategy to avoid syntax errors when using Jinja2 templates. I've realized that directly including {{ ... }} in index.html could cause issues with the React development server. My solution involves wrapping the Jinja2 variables within a <script id="marzban-data" type="application/json"> tag to prevent JavaScript execution errors and provide a cleaner integration. I'll then access this data from constants.ts.
+Validating Data Parsing
+I'm currently working to validate data parsing. I'm focusing on parsing the content within the <script id="marzban-data"> tag. I've realized potential issues with JSON strictness. Trailing commas or unquoted keys can break JSON.parse. My goal is to ensure robust parsing of the Jinja2-generated data, especially dealing with potential syntax errors in the JSON structure.
+Integrating Production Builds
+I'm now prioritizing the production build's functionality within Marzban. The standard practice, which I'll implement, involves building the React app and then injecting backend variables. In my approach, I'll modify index.html to inject these values into a window.marzban object, ensuring the production build functions correctly. I plan to use the marzban global for all Marzban data injection.
+I'm currently updating constants.ts to implement a fallback mechanism and formatting functions. I'll need to handle potential errors from the injected script, gracefully defaulting to mock data if window.marzban is absent or malformed. Moreover, I'm defining helper functions to transform raw byte and timestamp values from Marzban into formatted strings that align with the UserData interface in types.ts. This ensures compatibility with the existing UI elements.
+Defining Marzban Data Types
+I'm now focusing on defining data types. I'll modify types.ts to include the raw Marzban data structure, and I'll create utility functions in constants.ts for formatting byte and timestamp data from Marzban. My next step involves adding the Jinja2 script block to index.html. Finally, I'll update constants.ts to map window.marzban data to the USER_DATA and CONFIGS interfaces, with appropriate fallback mechanisms.
+Enhancing Error Handling
+I'm currently focused on enhancing error handling. I'm refining the script in index.html to be more robust, employing a try...catch block around the Jinja2 variable injection. The goal is to catch any potential syntax errors during local development and gracefully default to mock data. I'm also ensuring that the injected data has correct data types.
+Resolving Template Conflict
+I'm now prioritizing resolving the conflict between Jinja2 and JavaScript. The core issue is that Jinja2 templating syntax ({% ... %}, {{ ... }}) is not valid JavaScript and causes errors during local development. I've realized that using a comment block to encapsulate the Jinja2 variables isn't the best approach, as this doesn't fully solve the issue. I am now opting to define a function that parses the Jinja2 variables.
+Parsing Configuration Variables
+My focus has shifted to the window.MARZBAN_INJECTED object. I'm extracting and parsing the configuration variables from it. I will leverage this parsed data to populate the activeUserData and activeConfigs variables, which will be accessible application-wide. I'm ensuring all is valid.
+Integrating Transformation Logic
+I'm now integrating the transformation logic. I'm extracting data from window.MARZBAN_INJECTED, specifically focusing on user and sub_url. I'm mapping data_limit, used_traffic, and expire to new fields, totalTraffic, usedTraffic, and expiryDate. I'll use helper functions to format bytes and expiry dates. I'm calculating and applying usedPercentage, and retaining the mock data for usage history.
+Enhancing Jinja Integration
+I'm now focusing on optimizing the Jinja2 integration. The current strategy involves parsing a pre-defined JSON within a script tag. However, I want to refine this approach to ensure flexibility for future data modifications from the backend. I'm exploring different methods to better handle the templating and minimize potential errors.
+Finalizing Type Definitions
+I'm solidifying the Marzban data type definitions. I'm moving the MARZBAN_INJECTED interface to types.ts for consistency. My primary goal now is to remove hardcoded data from constants.ts and replace it with dynamic injection as Marzban provides. I will only be using the guide for data connection; existing designs will be maintained and not replaced with snippets.
+Refining Data Integration
+I'm currently working to integrate missing data from the Marzban API into my app. I've realized that certain essential fields like plan, usageHistory, and contact links aren't directly provided by the API. I'm focusing on handling these data gaps gracefully. For missing usage data, I'll keep the mock history for the current design but will comment that it's static. I'll maintain static support links, as there's no way to configure those. Lastly, I'll map the Marzban sub_token to userId.
+Mapping Final Fields
+I'm now mapping the remaining Marzban data fields to their corresponding types. I'll maintain static support links, given the absence of configuration. Additionally, I'll keep the mock usageHistory data for now, as real-time usage history retrieval isn't directly supported by the current Marzban API. My plan is to add comments about this mock data. I'm focusing on preserving the current design and not replacing it with snippets.
+Parsing Embedded JavaScript
+I'm now grappling with the issue of parsing the injected JavaScript. Specifically, I'm focusing on handling the embedded Jinja loop for links within the script tag. The browser wants to execute, and errors will stop. I'm exploring a robust solution to parse the resulting JSON data effectively. I'll need to figure out how to parse the JSON loop correctly.
+Finalizing Jinja Data Parsing
+I'm now focusing on finalizing the Jinja data parsing, specifically focusing on building the constants.ts and types.ts files to consume the variables. I will be sure to keep the app's existing specific classes, and only change the data source. I'm focusing on preserving the current design and not replacing it with snippets. I'm building constants.ts and types.ts right now to match the needed fields.
+I'm currently focused on extracting countryCode from link.remark, with the goal of correctly displaying country flags. The existing data uses manual country codes, so I need to devise a heuristic, potentially involving regular expressions, to automatically derive this code from the remark field. If extraction fails, I'll default to leaving the code undefined or investigate other methods.
+Parsing Emoji Remarks
+I'm now adding a fallback to the countryCode by parsing flags in Marzban remarks. I'll attempt to extract a flag emoji and, if present, map it to a country code. If emoji extraction fails, I'll default to the global icon to prevent any issues with missing or invalid codes. I'll focus on making sure all types match.
+Implementing Emoji Extraction
+I'm now implementing the emoji extraction strategy, aiming to extract the country code from emoji flags within link.remark. I'm starting by identifying and mapping flag emojis to their corresponding ISO country codes. I'll utilize a regular expression to search for emoji flags and, if a match is found, apply a lookup to retrieve the correct country code. In cases where no emoji is found, I'll default to the global flag to maintain consistency.
+Integrating Template Injection
+I'm now focusing on integrating the Jinja2 template injection correctly. The index.html script is now being updated to better handle potential syntax errors. I'll need to figure out how to correctly use the Jinja2 variables for development and production.
+Implementing Dynamic Injection
+I'm now integrating the data in the Marzban panel to the frontend. I will parse the variables from the Jinja template and inject them. I will replace the mock data with the injected data and keep the app current UI. I have confirmed that the Jinja templates allow us to achieve the user requests.
+Implementing Data Formatting
+I'm now implementing the byte and date formatting logic, starting with functions to handle raw byte values and timestamps. I'll transform these into readable formats. I'm leveraging constants.ts to host these formatting utilities, ensuring they're accessible throughout the app.
+Mapping Active Data
+I'm now mapping the incoming Marzban data to the active state. I'm focusing on parsing the MARZBAN_DATA object, handling missing data gracefully with fallbacks to mock data. I've defined a statusMap to convert Marzban's status codes to application-specific status. I'm also implementing byte and date formatting functions for usedTraffic and expiryDate, ensuring data consistency and user-friendliness across the app.
+Refining Configuration Mapping
+I'm currently working to map the Marzban-provided configuration data. I've focused on mapping usedTraffic, totalTraffic, and expiryDate with data formatting to ensure consistency and readability in the app's UI. I've also implemented a usedPercentage calculation, ensuring it's capped at 100%. I'm now integrating the subscriptionUrl and userId mapping and preparing for data validation.
+Fine-tuning Fallback Logic
+I'm now refining the fallback logic in constants.ts. I'm meticulously merging Marzban data injection with the existing mock data, ensuring seamless operation. I'll maintain static tutorial arrays and handle byte and date formatting. The goal is to gracefully handle missing data and ensure the app's functionality remains consistent and robust.
+Mapping Status Values
+I'm now mapping the status from Marzban to the app's data types. Since Marzban uses different codes than the app, I need to convert them correctly. I will map active and on_hold to the app's active status, and the rest will map to inactive. The constants.ts and type files need this modification.
+Finalizing Jinja Data Parsing
+I'm now focusing on the final preparations for Jinja data parsing, carefully reviewing the parsing functions and ensuring proper handling of potential character encoding issues. I've re-examined how I am ensuring proper HTML escaping to prevent potential injection. I'll test these final aspects on the actual server responses.
+To connect the frontend to the Marzban Panel, we need to enable the application to receive the data injected by the Jinja2 engine in index.html and then use that data within the React application instead of the static mock data.
+Here is the plan:
+Modify index.html: Add a <script> block that constructs a global window.MARZBAN_DATA object using the Jinja2 variables ({{ user.username }}, etc.) described in the documentation.
+Update constants.ts: Update the application logic to check for this global object. If it exists (production/Marzban environment), parse and format the data to match the app's UserData structure. If it doesn't exist (local development), fall back to the existing mock data.
+This ensures the app works perfectly on the Marzban panel while maintaining the "amazing" look and feel and allowing local development to continue.
+index.html
