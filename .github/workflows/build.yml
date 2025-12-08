@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          # cache رو برداشتم چون package-lock.json نداری
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install vite-plugin-singlefile
         run: npm install vite-plugin-singlefile --save-dev
@@ -67,7 +67,7 @@ jobs:
         with:
           tag_name: v${{ github.run_number }}
           name: Release v${{ github.run_number }}
-          files: dist/index.html
+          files: dist/index. html
           generate_release_notes: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets. GITHUB_TOKEN }}
