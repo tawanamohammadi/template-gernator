@@ -26,7 +26,7 @@ mkdir -p "$INSTALL_DIR/$TEMPLATE_NAME"
 echo -e "${BLUE}Fetching latest release from $REPO...${NC}"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
 RELEASE_DATA=$(curl -s "$API_URL")
-LATEST_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url" | cut -d '"' -f 4)
+LATEST_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url" | grep "template.zip" | cut -d '"' -f 4)
 
 if [ -z "$LATEST_URL" ]; then
     echo -e "${RED}Error: Could not find latest release.${NC}"
