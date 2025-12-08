@@ -23,33 +23,33 @@ declare global {
 
 // Utility Functions
 const formatBytes = (bytes: number, decimals = 2): string => {
-    if (!+bytes) return '0 MB';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  if (!+bytes) return '0 MB';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
 const calculateDaysRemaining = (expireTimestamp: number | null): string | number => {
-    if (!expireTimestamp) return '∞';
-    // Marzban usually sends seconds timestamp, ensuring consistency
-    const now = Math.floor(Date.now() / 1000);
-    const diff = expireTimestamp - now;
-    if (diff <= 0) return 0;
-    return Math.ceil(diff / (60 * 60 * 24));
+  if (!expireTimestamp) return '∞';
+  // Marzban usually sends seconds timestamp, ensuring consistency
+  const now = Math.floor(Date.now() / 1000);
+  const diff = expireTimestamp - now;
+  if (diff <= 0) return 0;
+  return Math.ceil(diff / (60 * 60 * 24));
 }
 
 const formatExpiryDate = (expireTimestamp: number | null): string => {
-    if (!expireTimestamp) return '∞';
-    // Multiply by 1000 because JS Date uses milliseconds
-    return new Date(expireTimestamp * 1000).toLocaleDateString('fa-IR');
+  if (!expireTimestamp) return '∞';
+  // Multiply by 1000 because JS Date uses milliseconds
+  return new Date(expireTimestamp * 1000).toLocaleDateString('fa-IR');
 }
 
 // Default Mock Data (Fallback for local development)
 const MOCK_USER_DATA: UserData = {
   username: 'LocalDev_User',
-  plan: 'VIP Premium', 
+  plan: 'VIP Premium',
   status: 'active',
   usedTraffic: '303.9 MB',
   totalTraffic: '350.0 GB',
@@ -88,7 +88,7 @@ let activeConfigs = MOCK_CONFIGS;
 // The try-catch block in a real scenario or simple undefined check handles this.
 if (typeof window !== 'undefined' && window.MARZBAN_DATA && window.MARZBAN_DATA.user.username !== "{{ user.username }}") {
   const m = window.MARZBAN_DATA;
-  
+
   // Status mapping
   const statusMap: Record<string, 'active' | 'inactive'> = {
     'active': 'active',
@@ -100,12 +100,12 @@ if (typeof window !== 'undefined' && window.MARZBAN_DATA && window.MARZBAN_DATA.
 
   const totalBytes = m.user.data_limit || 0;
   const usedBytes = m.user.used_traffic || 0;
-  
+
   // Logic to determine plan name based on limits
   let planName = 'Standard';
   if (!m.user.data_limit) planName = 'Unlimited';
   else if (m.user.data_limit > 50 * 1024 * 1024 * 1024) planName = 'VIP Premium';
-  
+
   activeUserData = {
     ...MOCK_USER_DATA, // Keep static links (support, telegram, etc.)
     username: m.user.username,
@@ -138,24 +138,24 @@ export const CONFIGS = activeConfigs;
 
 // Tutorial Data Steps
 const androidTutorial = [
-    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
-    { title: 'step2_title', description: 'step2_desc', icon: 'Plus' },
-    { title: 'step3_title', description: 'step3_desc', icon: 'Download' },
-    { title: 'step4_title', description: 'step4_desc', icon: 'Zap' },
+  { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+  { title: 'step2_title', description: 'step2_desc', icon: 'Plus' },
+  { title: 'step3_title', description: 'step3_desc', icon: 'Download' },
+  { title: 'step4_title', description: 'step4_desc', icon: 'Zap' },
 ];
 
 const windowsTutorial = [
-    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
-    { title: 'step2_title', description: 'step2_win_desc', icon: 'Monitor' },
-    { title: 'step3_title', description: 'step3_win_desc', icon: 'CheckSquare' },
-    { title: 'step4_title', description: 'step4_win_desc', icon: 'Zap' },
+  { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+  { title: 'step2_title', description: 'step2_win_desc', icon: 'Monitor' },
+  { title: 'step3_title', description: 'step3_win_desc', icon: 'CheckSquare' },
+  { title: 'step4_title', description: 'step4_win_desc', icon: 'Zap' },
 ];
 
 const iosTutorial = [
-    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
-    { title: 'step2_title', description: 'step2_ios_desc', icon: 'Smartphone' },
-    { title: 'step3_title', description: 'step3_ios_desc', icon: 'Download' },
-    { title: 'step4_title', description: 'step4_ios_desc', icon: 'Zap' },
+  { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+  { title: 'step2_title', description: 'step2_ios_desc', icon: 'Smartphone' },
+  { title: 'step3_title', description: 'step3_ios_desc', icon: 'Download' },
+  { title: 'step4_title', description: 'step4_ios_desc', icon: 'Zap' },
 ];
 
 export const OS_DATA: OsData[] = [
@@ -164,10 +164,10 @@ export const OS_DATA: OsData[] = [
     label: 'iOS / Mac',
     icon: 'https://img.icons8.com/3d-fluency/94/mac-os.png',
     apps: [
-      { id:'v2box', name: 'v2Box', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#', tutorialSteps: iosTutorial },
-      { id:'streisand', name: 'Streisand', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#' },
-      { id:'foxray', name: 'FoXray', minOsVersion: 'iOS 16+', downloadLink: '#', addLink: '#' },
-      { id:'shadowrocket', name: 'Shadowrocket', minOsVersion: 'iOS 12+', downloadLink: '#', addLink: '#' },
+      { id: 'v2box', name: 'v2Box', minOsVersion: 'iOS 14+', downloadLink: 'https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690', addLink: '#', tutorialSteps: iosTutorial },
+      { id: 'streisand', name: 'Streisand', minOsVersion: 'iOS 14+', downloadLink: 'https://apps.apple.com/us/app/streisand/id6450534064', addLink: '#' },
+      { id: 'foxray', name: 'FoXray', minOsVersion: 'iOS 16+', downloadLink: 'https://apps.apple.com/us/app/foxray/id6448898396', addLink: '#' },
+      { id: 'shadowrocket', name: 'Shadowrocket', minOsVersion: 'iOS 12+', downloadLink: 'https://apps.apple.com/us/app/shadowrocket/id932747118', addLink: '#' },
     ]
   },
   {
@@ -175,9 +175,9 @@ export const OS_DATA: OsData[] = [
     label: 'Android',
     icon: 'https://img.icons8.com/3d-fluency/94/android-os.png',
     apps: [
-      { id:'v2rayng', name: 'v2rayNG', downloadLink: '#', addLink: '#', tutorialSteps: androidTutorial },
-      { id:'nekobox', name: 'NekoBox', downloadLink: '#', addLink: '#' },
-      { id:'singbox', name: 'Sing-Box', downloadLink: '#', addLink: '#' },
+      { id: 'v2rayng', name: 'v2rayNG', downloadLink: 'https://github.com/2dust/v2rayNG/releases', addLink: '#', tutorialSteps: androidTutorial },
+      { id: 'nekobox', name: 'NekoBox', downloadLink: 'https://github.com/MatsuriDayo/NekoBoxForAndroid/releases/download/1.4.1/NekoBox-1.4.1-arm64-v8a.apk', addLink: '#' },
+      { id: 'singbox', name: 'Sing-Box', downloadLink: 'https://github.com/SagerNet/sing-box/releases/download/v1.12.12/SFA-1.12.12-arm64-v8a.apk', addLink: '#' },
     ]
   },
   {
@@ -185,27 +185,27 @@ export const OS_DATA: OsData[] = [
     label: 'Windows',
     icon: 'https://img.icons8.com/3d-fluency/94/windows-11.png',
     apps: [
-      { id:'v2rayn', name: 'v2rayN', downloadLink: '#', addLink: '#', tutorialSteps: windowsTutorial },
-      { id:'nekoray', name: 'Nekoray', downloadLink: '#', addLink: '#' },
-      { id:'clashverge', name: 'Clash Verge', downloadLink: '#', addLink: '#' },
+      { id: 'v2rayn', name: 'v2rayN', downloadLink: 'https://github.com/2dust/v2rayN/releases/download/7.15.7/v2rayN-windows-64-SelfContained-With-Core.7z', addLink: '#', tutorialSteps: windowsTutorial },
+      { id: 'nekoray', name: 'Nekoray', downloadLink: 'https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-windows64.zip', addLink: '#' },
+      { id: 'clashverge', name: 'Clash Verge', downloadLink: 'https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.4.3/Clash.Verge_2.4.3_x64-setup.exe', addLink: '#' },
     ]
   }
 ];
 
 export const getFaqData = (lang: 'fa' | 'en'): FAQItem[] => {
-    if (lang === 'fa') {
-        return [
-            { question: 'چگونه اشتراک خود را تمدید کنم؟', answer: 'برای تمدید اشتراک، کافیست در بخش وضعیت اشتراک روی دکمه "تمدید اشتراک" کلیک کنید تا به پشتیبانی تلگرام متصل شوید.' },
-            { question: 'چگونه به سرویس متصل شوم؟', answer: 'ابتدا نرم‌افزار مناسب سیستم عامل خود را از بخش "دانلود و اتصال" دریافت کنید. سپس لینک اشتراک یا یکی از کانفیگ‌ها را کپی کرده و در برنامه وارد کنید.' },
-            { question: 'چرا سرعتم کم شده است؟', answer: 'ممکن است سروری که به آن متصل هستید شلوغ باشد. لطفا کانفیگ دیگری (مثلا از کشور دیگر) را امتحان کنید و حتما اشتراک خود را بروزرسانی کنید.' },
-            { question: 'آیا حجم مصرفی دقیق است؟', answer: 'بله، نمودار مصرف به صورت آنی بروزرسانی می‌شود و دقیقاً مقدار ترافیک مصرف شده از بسته شما را نمایش می‌دهد.' }
-        ];
-    } else {
-        return [
-            { question: 'How do I renew my subscription?', answer: 'To renew, simply click the "Renew Subscription" button in the Usage status section to contact support via Telegram.' },
-            { question: 'How do I connect?', answer: 'First, download the app for your OS from the "Download & Connect" section. Then copy the subscription link or one of the configs and add it to the app.' },
-            { question: 'Why is my speed slow?', answer: 'The server you are connected to might be busy. Please try another config (e.g., from a different country) and make sure to update your subscription.' },
-            { question: 'Is data usage accurate?', answer: 'Yes, the usage chart is updated in real-time and shows exactly how much data you have consumed from your plan.' }
-        ];
-    }
+  if (lang === 'fa') {
+    return [
+      { question: 'چگونه اشتراک خود را تمدید کنم؟', answer: 'برای تمدید اشتراک، کافیست در بخش وضعیت اشتراک روی دکمه "تمدید اشتراک" کلیک کنید تا به پشتیبانی تلگرام متصل شوید.' },
+      { question: 'چگونه به سرویس متصل شوم؟', answer: 'ابتدا نرم‌افزار مناسب سیستم عامل خود را از بخش "دانلود و اتصال" دریافت کنید. سپس لینک اشتراک یا یکی از کانفیگ‌ها را کپی کرده و در برنامه وارد کنید.' },
+      { question: 'چرا سرعتم کم شده است؟', answer: 'ممکن است سروری که به آن متصل هستید شلوغ باشد. لطفا کانفیگ دیگری (مثلا از کشور دیگر) را امتحان کنید و حتما اشتراک خود را بروزرسانی کنید.' },
+      { question: 'آیا حجم مصرفی دقیق است؟', answer: 'بله، نمودار مصرف به صورت آنی بروزرسانی می‌شود و دقیقاً مقدار ترافیک مصرف شده از بسته شما را نمایش می‌دهد.' }
+    ];
+  } else {
+    return [
+      { question: 'How do I renew my subscription?', answer: 'To renew, simply click the "Renew Subscription" button in the Usage status section to contact support via Telegram.' },
+      { question: 'How do I connect?', answer: 'First, download the app for your OS from the "Download & Connect" section. Then copy the subscription link or one of the configs and add it to the app.' },
+      { question: 'Why is my speed slow?', answer: 'The server you are connected to might be busy. Please try another config (e.g., from a different country) and make sure to update your subscription.' },
+      { question: 'Is data usage accurate?', answer: 'Yes, the usage chart is updated in real-time and shows exactly how much data you have consumed from your plan.' }
+    ];
+  }
 }
