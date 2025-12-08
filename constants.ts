@@ -33,6 +33,7 @@ const formatBytes = (bytes: number, decimals = 2): string => {
 
 const calculateDaysRemaining = (expireTimestamp: number | null): string | number => {
     if (!expireTimestamp) return '∞';
+    // Marzban usually sends seconds timestamp, ensuring consistency
     const now = Math.floor(Date.now() / 1000);
     const diff = expireTimestamp - now;
     if (diff <= 0) return 0;
@@ -41,23 +42,24 @@ const calculateDaysRemaining = (expireTimestamp: number | null): string | number
 
 const formatExpiryDate = (expireTimestamp: number | null): string => {
     if (!expireTimestamp) return '∞';
+    // Multiply by 1000 because JS Date uses milliseconds
     return new Date(expireTimestamp * 1000).toLocaleDateString('fa-IR');
 }
 
-// Default Mock Data (Fallback)
+// Default Mock Data (Fallback for local development)
 const MOCK_USER_DATA: UserData = {
-  username: 'ZakiKam',
+  username: 'LocalDev_User',
   plan: 'VIP Premium', 
   status: 'active',
   usedTraffic: '303.9 MB',
   totalTraffic: '350.0 GB',
-  usedPercentage: 0.1,
-  expiryDate: '∞',
-  daysRemaining: '∞',
+  usedPercentage: 10,
+  expiryDate: '1403/12/29',
+  daysRemaining: 30,
   supportLink: 'https://t.me/support',
   channelLink: 'https://t.me/channel',
-  subscriptionUrl: 'https://sub.lookavpn.com/api/v1/client/subscribe?token=c9662d7f-e82a-4d2b-9be5-26bc012a90f4',
-  userId: 'c9662d7f-e82a',
+  subscriptionUrl: 'https://sub.example.com/api/v1/client/subscribe?token=mock-token',
+  userId: 'mock-uuid-1234',
   whatsappLink: 'https://wa.me/123456789',
   email: 'mailto:support@lookavpn.com',
   phone: 'tel:+1234567890',
@@ -73,22 +75,18 @@ const MOCK_USER_DATA: UserData = {
 
 const MOCK_CONFIGS: ConfigItem[] = [
   { id: '1', name: 'NEWS | اطلاع رسانی', url: 'https://t.me/channel', countryCode: 'ir' },
-  { id: '3', name: 'USA 3 | Dedicated', countryCode: 'us', url: 'vless://...' },
-  { id: '4', name: 'GER | Germany', countryCode: 'de', url: 'vless://...' },
-  { id: '5', name: 'ENG | England', countryCode: 'gb', url: 'vless://...' },
-  { id: '6', name: 'USA 1 | New York', countryCode: 'us', url: 'vless://...' },
-  { id: '7', name: 'USA 2 | California', countryCode: 'us', url: 'vless://...' },
-  { id: '8', name: 'NL 1 | Amsterdam', countryCode: 'nl', url: 'vless://...' },
-  { id: '9', name: 'NL 2 | NL Plus', countryCode: 'nl', url: 'vless://...' },
-  { id: '10', name: 'GER 2 | Berlin', countryCode: 'de', url: 'vless://...' },
-  { id: '11', name: 'ENG 2 | London', countryCode: 'gb', url: 'vless://...' }
+  { id: '2', name: 'Test Server', countryCode: 'de', url: 'vless://uuid@ip:port?security=reality&sni=google.com&fp=chrome&type=grpc&serviceName=grpc#Test_Server' }
 ];
 
 // Data Processing Logic
 let activeUserData = MOCK_USER_DATA;
 let activeConfigs = MOCK_CONFIGS;
 
-if (typeof window !== 'undefined' && window.MARZBAN_DATA) {
+// Check if we are in Marzban environment (window.MARZBAN_DATA exists)
+// Note: In local development, the Jinja tags in index.html might not render valid JS, 
+// causing window.MARZBAN_DATA to be undefined or the script to fail. 
+// The try-catch block in a real scenario or simple undefined check handles this.
+if (typeof window !== 'undefined' && window.MARZBAN_DATA && window.MARZBAN_DATA.user.username !== "{{ user.username }}") {
   const m = window.MARZBAN_DATA;
   
   // Status mapping
@@ -103,26 +101,35 @@ if (typeof window !== 'undefined' && window.MARZBAN_DATA) {
   const totalBytes = m.user.data_limit || 0;
   const usedBytes = m.user.used_traffic || 0;
   
+  // Logic to determine plan name based on limits
+  let planName = 'Standard';
+  if (!m.user.data_limit) planName = 'Unlimited';
+  else if (m.user.data_limit > 50 * 1024 * 1024 * 1024) planName = 'VIP Premium';
+  
   activeUserData = {
-    ...MOCK_USER_DATA, // Preserve static support links from mock data
+    ...MOCK_USER_DATA, // Keep static links (support, telegram, etc.)
     username: m.user.username,
+    plan: planName,
     status: statusMap[m.user.status] || 'inactive',
     usedTraffic: formatBytes(usedBytes),
-    totalTraffic: totalBytes ? formatBytes(totalBytes) : '∞',
-    usedPercentage: totalBytes 
-      ? Math.min(100, Math.round((usedBytes / totalBytes) * 100))
+    totalTraffic: m.user.data_limit ? formatBytes(m.user.data_limit) : '∞',
+    usedPercentage: (m.user.data_limit && m.user.data_limit > 0)
+      ? Math.min(100, Math.round((usedBytes / m.user.data_limit) * 100))
       : 0,
     expiryDate: formatExpiryDate(m.user.expire),
     daysRemaining: calculateDaysRemaining(m.user.expire),
     subscriptionUrl: m.sub_url,
     userId: m.sub_token || m.user.username,
+    // We keep mock usage history for charts because Marzban doesn't provide history arrays in the standard template
+    usageHistory24h: MOCK_USER_DATA.usageHistory24h,
+    usageHistory30d: MOCK_USER_DATA.usageHistory30d,
   };
 
   activeConfigs = m.links.map((link, idx) => ({
     id: String(idx),
     name: link.remark,
     url: link.url,
-    countryCode: '' // Default to no flag (globe icon)
+    countryCode: '' // Marzban doesn't provide country code by default, UI will handle fallback
   }));
 }
 

@@ -103,8 +103,6 @@
   <!-- Marzban Data Injection -->
   <script>
     // This object is populated by Jinja2 when served by Marzban.
-    // In local development, the Jinja2 tags will cause syntax errors, which are safe to ignore
-    // as the React app will fallback to mock data in constants.ts.
     window.MARZBAN_DATA = {
       user: {
         username: "{{ user.username }}",
