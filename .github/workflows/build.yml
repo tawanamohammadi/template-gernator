@@ -1,15 +1,16 @@
 
-name: Build Marzban Template
+name: Build & Release
 
 on:
   push:
     branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,35 +21,32 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # Removed cache: 'npm' because package-lock.json might be missing
 
       - name: Install dependencies
-        # Changed 'npm ci' to 'npm install' to work without a lockfile
         run: npm install
 
       - name: Build project
         run: npm run build
 
-      # Since Marzban templates usually just need the index.html and assets,
-      # we zip the build output (usually 'dist' or 'build')
-      - name: Zip build output
+      - name: Prepare Release Asset
         run: |
-          # Check if dist exists, otherwise try build (common for CRA)
-          if [ -d "dist" ]; then
-            cd dist
-            zip -r ../marzban-template.zip .
-          elif [ -d "build" ]; then
-            cd build
-            zip -r ../marzban-template.zip .
+          # Find index.html in dist or build folder and copy it to root for upload
+          if [ -f "dist/index.html" ]; then
+            cp dist/index.html index.html
+          elif [ -f "build/index.html" ]; then
+            cp build/index.html index.html
           else
-            echo "Build folder not found!"
+            echo "Error: index.html not found in build output!"
             exit 1
           fi
-          cd ..
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Update Latest Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: marzban-template
-          path: marzban-template.zip
-          retention-days: 5
+          tag_name: latest
+          name: Latest Release
+          files: index.html
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
