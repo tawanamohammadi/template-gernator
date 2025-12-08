@@ -1,15 +1,19 @@
+
 import React, { useState } from 'react';
 import { CONFIGS } from '../constants';
-import { Copy, QrCode, Check, Shield } from 'lucide-react';
+import { Copy, QrCode, Check, Shield, Globe } from 'lucide-react';
 import { QRCodeModal } from './QRCodeModal';
+import { Language, translations } from '../translations';
 
 interface ConfigListProps {
   onCopy: (text: string) => void;
+  lang: Language;
 }
 
-export const ConfigList: React.FC<ConfigListProps> = ({ onCopy }) => {
+export const ConfigList: React.FC<ConfigListProps> = ({ onCopy, lang }) => {
   const [selectedConfig, setSelectedConfig] = useState<{ url: string; title: string } | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const t = translations[lang];
 
   const handleCopy = (id: string, url: string) => {
     onCopy(url);
@@ -28,71 +32,74 @@ export const ConfigList: React.FC<ConfigListProps> = ({ onCopy }) => {
   };
 
   return (
-    <div id="configs" className="mb-16 scroll-mt-24">
-      <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-8 gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
+    <div id="configs" className="scroll-mt-24">
+      <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-8 gap-6">
         <div>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">کانفیگ‌های اتصال</h2>
-             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">برای اتصال، یکی از سرورهای زیر را انتخاب کنید</p>
+             <h2 className="text-3xl font-black text-white mb-2 tracking-tight">{t.configs.title}</h2>
+             <p className="text-spotify-subtext">{t.configs.subtitle}</p>
         </div>
         
         <button
           onClick={copyAll}
-          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-blue-500/20 dark:shadow-blue-900/30 flex items-center justify-center gap-2 active:scale-95 whitespace-nowrap"
+          className="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/10 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center justify-center gap-2 backdrop-blur-md"
         >
           <Copy size={18} />
-          <span>کپی همه</span>
+          <span>{t.configs.copy_all}</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {CONFIGS.map((config) => {
            const flagUrl = getFlagUrl(config.countryCode);
            
            return (
             <div
                 key={config.id}
-                className="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:border-blue-400 dark:hover:border-slate-600 rounded-2xl p-4 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-black/20 hover:-translate-y-1 backdrop-blur-sm"
+                className="relative bg-spotify-card hover:bg-spotify-elevated border border-spotify-border hover:border-spotify-green/40 rounded-2xl p-5 flex flex-col justify-between group transition-all duration-300 shadow-lg hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-800/80 overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm shrink-0">
-                        {flagUrl ? (
-                            <img src={flagUrl} alt={config.countryCode} className="w-full h-full object-cover" />
-                        ) : (
-                            <Shield size={22} className="text-slate-400" />
-                        )}
-                    </div>
-                    <div className="min-w-0">
-                        <p className="text-slate-800 dark:text-slate-100 font-bold text-sm sm:text-base truncate">{config.name.split('|')[0]}</p>
-                        {config.name.includes('|') && (
-                            <p className="text-slate-500 text-xs mt-0.5">{config.name.split('|')[1]}</p>
-                        )}
-                    </div>
+                {/* Glow Effect on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-spotify-green/0 via-spotify-green/5 to-spotify-green/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                <div className="flex items-start justify-between mb-4 relative z-10">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-black border border-white/10 overflow-hidden shadow-2xl relative">
+                            {flagUrl ? (
+                                <img src={flagUrl} alt={config.countryCode} className="w-full h-full object-cover scale-110" />
+                            ) : (
+                                <Globe size={20} className="text-spotify-subtext" />
+                            )}
+                            <div className="absolute inset-0 bg-black/10"></div>
+                        </div>
+                        <div className="min-w-0">
+                            <h3 className="text-white font-bold text-base truncate group-hover:text-spotify-green transition-colors" dir="ltr">{config.name.split('|')[0]}</h3>
+                             <p className="text-spotify-subtext text-xs mt-0.5 truncate flex items-center gap-1">
+                                {config.countryCode ? config.countryCode.toUpperCase() : 'AUTO'} 
+                                <span className="w-1 h-1 rounded-full bg-spotify-subtext"></span>
+                                VLESS
+                             </p>
+                        </div>
+                     </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-3 mt-auto pt-3 border-t border-slate-100 dark:border-slate-700/50">
-                     <div className="text-[10px] font-mono text-slate-400 bg-slate-50 dark:bg-slate-900/50 px-2 py-1 rounded max-w-[120px] truncate">
-                        {config.countryCode ? config.countryCode.toUpperCase() : 'AUTO'} • TCP
-                     </div>
-                     <div className="flex gap-2">
-                        <button
-                            onClick={() => setSelectedConfig({ url: config.url, title: config.name })}
-                            className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors"
-                            title="QR Code"
-                        >
-                            <QrCode size={18} />
-                        </button>
-                        <button
-                            onClick={() => handleCopy(config.id, config.url)}
-                            className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-300 shadow-sm ${
+                <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-white/5 relative z-10">
+                     <button
+                        onClick={() => setSelectedConfig({ url: config.url, title: config.name })}
+                        className="flex-1 py-2.5 flex items-center justify-center gap-2 text-spotify-subtext hover:text-white bg-white/5 hover:bg-white/10 rounded-lg text-xs font-bold transition-all"
+                    >
+                        <QrCode size={16} />
+                        QR CODE
+                    </button>
+                    <button
+                        onClick={() => handleCopy(config.id, config.url)}
+                        className={`flex-1 py-2.5 flex items-center justify-center gap-2 rounded-lg text-xs font-bold transition-all ${
                             copiedId === config.id
-                                ? 'bg-emerald-500 text-white shadow-emerald-500/30'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600'
-                            }`}
-                            title="Copy"
-                        >
-                            {copiedId === config.id ? <Check size={16} /> : <Copy size={16} />}
-                        </button>
-                    </div>
+                                ? 'bg-spotify-green text-black'
+                                : 'bg-white text-black hover:bg-gray-200'
+                        }`}
+                    >
+                        {copiedId === config.id ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedId === config.id ? 'COPIED' : 'COPY'}
+                    </button>
                 </div>
             </div>
             );

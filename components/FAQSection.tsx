@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { FAQ_DATA } from '../constants';
-import { ChevronDown, HelpCircle } from 'lucide-react';
 
-export const FAQSection: React.FC = () => {
+import React, { useState } from 'react';
+import { getFaqData } from '../constants';
+import { ChevronDown, HelpCircle } from 'lucide-react';
+import { Language, translations } from '../translations';
+
+interface FAQSectionProps {
+  lang: Language;
+}
+
+export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const t = translations[lang];
+  const faqData = getFaqData(lang);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -15,12 +23,12 @@ export const FAQSection: React.FC = () => {
         <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <HelpCircle size={24} />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">سوالات متداول</h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">پاسخ به سوالاتی که ممکن است برای شما پیش بیاید</p>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t.faq.title}</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">{t.faq.subtitle}</p>
       </div>
 
       <div className="space-y-3">
-        {FAQ_DATA.map((item, index) => (
+        {faqData.map((item, index) => (
           <div 
             key={index} 
             className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
@@ -31,7 +39,7 @@ export const FAQSection: React.FC = () => {
           >
             <button
               onClick={() => toggleFAQ(index)}
-              className="w-full flex items-center justify-between p-5 text-right"
+              className="w-full flex items-center justify-between p-5 text-right rtl:text-right ltr:text-left"
             >
               <span className={`font-bold text-sm sm:text-base ${openIndex === index ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>
                 {item.question}
@@ -46,7 +54,7 @@ export const FAQSection: React.FC = () => {
                     openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >
-              <div className="p-5 pt-0 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-700/50 mt-2">
+              <div className="p-5 pt-0 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-700/50 mt-2 text-right rtl:text-right ltr:text-left">
                 {item.answer}
               </div>
             </div>

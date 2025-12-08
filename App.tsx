@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { USER_DATA } from './constants';
 import { UsageSection } from './components/UsageSection';
@@ -6,103 +7,86 @@ import { ConfigList } from './components/ConfigList';
 import { SupportFooter } from './components/SupportFooter';
 import { HeroSection } from './components/HeroSection';
 import { FAQSection } from './components/FAQSection';
-import { ThemeToggle } from './components/ThemeToggle';
+import { LanguageToggle } from './components/LanguageToggle';
 import { FeaturesSection } from './components/FeaturesSection';
 import { Toast } from './components/Toast';
 import { ProfileModal } from './components/ProfileModal';
-import { ShieldCheck, User, Crown } from 'lucide-react';
+import { ShieldCheck, User, Crown, Menu } from 'lucide-react';
+import { Language, translations } from './translations';
 
 const App: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isDark, setIsDark] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [lang, setLang] = useState<Language>('fa');
 
-  // Initialize theme based on html class or preference
   useEffect(() => {
-    if (document.documentElement.classList.contains('dark')) {
-      setIsDark(true);
-    } else {
-      setIsDark(false);
-    }
+     document.documentElement.classList.add('dark');
   }, []);
 
-  const toggleTheme = () => {
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.remove('dark');
-      setIsDark(false);
-    } else {
-      html.classList.add('dark');
-      setIsDark(true);
-    }
-  };
+  useEffect(() => {
+    document.documentElement.dir = translations[lang].dir;
+    document.documentElement.lang = lang;
+    document.body.style.fontFamily = `"${translations[lang].font}", sans-serif`;
+  }, [lang]);
 
   const handleCopy = useCallback((text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      setToastMessage('کپی شد!');
+      setToastMessage(translations[lang].configs.copy_toast);
     }).catch(() => {
-      setToastMessage('مشکلی در کپی کردن پیش آمد');
+      setToastMessage(translations[lang].configs.copy_error);
     });
-  }, []);
+  }, [lang]);
 
   return (
-    <div className="min-h-screen pb-safe font-sans relative overflow-x-hidden selection:bg-blue-500/30">
+    <div className="min-h-screen pb-safe relative overflow-x-hidden selection:bg-spotify-green selection:text-black">
         
-        {/* Background Mesh (Dark Mode) */}
-        <div className="fixed inset-0 z-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-500">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 rounded-full blur-[120px]"></div>
-            <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-indigo-900/20 rounded-full blur-[100px]"></div>
-            <div className="absolute bottom-[-10%] left-[20%] w-[30%] h-[30%] bg-cyan-900/10 rounded-full blur-[100px]"></div>
+        {/* Deep Ambient Background */}
+        <div className="fixed inset-0 z-0 pointer-events-none bg-black">
+            <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-spotify-green/20 rounded-full blur-[150px] opacity-20 animate-pulse-slow"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-900/30 rounded-full blur-[150px] opacity-20"></div>
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
         </div>
 
-         {/* Background Mesh (Light Mode) */}
-         <div className="fixed inset-0 z-0 pointer-events-none opacity-100 dark:opacity-0 transition-opacity duration-500">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-200/40 rounded-full blur-[120px]"></div>
-            <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-indigo-200/30 rounded-full blur-[100px]"></div>
-        </div>
-
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            {/* Header */}
-            <header className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-12 gap-4">
-                <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-center sm:justify-start">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 ring-2 ring-white/10">
-                        <ShieldCheck className="text-white w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2.5} />
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+            {/* Header - Enforced LTR Layout for stability */}
+            <header dir="ltr" className="flex items-center justify-between mb-12 sticky top-4 z-40 bg-black/60 backdrop-blur-xl p-2.5 pl-5 pr-2.5 rounded-full border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/20">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(29,185,84,0.4)] text-black animate-fade-in">
+                        <ShieldCheck className="w-6 h-6" strokeWidth={2.5} />
                     </div>
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Looka<span className="text-blue-500">.</span></h1>
+                        <h1 className="text-2xl font-black text-white tracking-tighter">Looka<span className="text-spotify-green">.</span></h1>
                     </div>
                 </div>
                 
-                <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
-                    <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
+                <div className="flex items-center gap-2">
+                    <LanguageToggle lang={lang} setLang={setLang} />
                     
-                    {/* User Profile Pill */}
                     <button 
                         onClick={() => setIsProfileOpen(true)}
-                        className="flex items-center gap-3 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 rounded-2xl px-2 py-2 pr-4 backdrop-blur-md shadow-sm hover:border-blue-400 dark:hover:border-blue-500/50 transition-colors group cursor-pointer"
+                        className="flex items-center gap-3 bg-white/5 border border-white/5 rounded-full pl-4 pr-1.5 py-1.5 hover:bg-white/10 transition-all group cursor-pointer"
                     >
                          <div className="flex flex-col items-end hidden sm:flex">
-                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{USER_DATA.username}</span>
-                            <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-1.5 rounded flex items-center gap-1 mt-0.5">
-                                <Crown size={10} />
+                            <span className="text-sm font-bold text-white leading-tight group-hover:text-spotify-green transition-colors">{USER_DATA.username}</span>
+                            <span className="text-[9px] text-black font-black bg-spotify-green px-1.5 rounded-sm flex items-center gap-1 mt-0.5 tracking-wider uppercase">
                                 VIP
                             </span>
                          </div>
-                        <div className="w-9 h-9 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center border border-slate-200 dark:border-slate-600 group-hover:bg-blue-100 dark:group-hover:bg-slate-600 transition-colors">
-                            <User size={18} className="text-slate-500 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-white transition-colors" />
+                        <div className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors shadow-inner">
+                            <User size={18} className="text-white group-hover:text-black" />
                         </div>
                     </button>
                 </div>
             </header>
 
-            <main>
-                <HeroSection />
-                <UsageSection userData={USER_DATA} />
-                <ConfigList onCopy={handleCopy} />
-                <AppGuide />
-                <FeaturesSection />
-                <FAQSection />
-                <SupportFooter />
+            <main className="space-y-24">
+                <HeroSection lang={lang} />
+                <UsageSection userData={USER_DATA} lang={lang} />
+                <ConfigList onCopy={handleCopy} lang={lang} />
+                <AppGuide lang={lang} />
+                <FeaturesSection lang={lang} />
+                <FAQSection lang={lang} />
+                <SupportFooter lang={lang} />
             </main>
         </div>
 
@@ -115,6 +99,7 @@ const App: React.FC = () => {
             onClose={() => setIsProfileOpen(false)} 
             userData={USER_DATA}
             onCopy={handleCopy}
+            lang={lang}
         />
     </div>
   );

@@ -1,135 +1,204 @@
-import { ConfigItem, OsData, UserData, FAQItem } from './types';
-import { Apple, Smartphone, Monitor } from 'lucide-react';
-import React from 'react';
 
-export const USER_DATA: UserData = {
+import { ConfigItem, OsData, UserData, FAQItem } from './types';
+
+// Marzban Types
+interface MarzbanData {
+  user: {
+    username: string;
+    used_traffic: number;
+    data_limit: number | null;
+    expire: number | null;
+    status: string;
+  };
+  sub_url: string;
+  sub_token: string;
+  links: { remark: string; url: string; }[];
+}
+
+declare global {
+  interface Window {
+    MARZBAN_DATA?: MarzbanData;
+  }
+}
+
+// Utility Functions
+const formatBytes = (bytes: number, decimals = 2): string => {
+    if (!+bytes) return '0 MB';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+const calculateDaysRemaining = (expireTimestamp: number | null): string | number => {
+    if (!expireTimestamp) return '∞';
+    const now = Math.floor(Date.now() / 1000);
+    const diff = expireTimestamp - now;
+    if (diff <= 0) return 0;
+    return Math.ceil(diff / (60 * 60 * 24));
+}
+
+const formatExpiryDate = (expireTimestamp: number | null): string => {
+    if (!expireTimestamp) return '∞';
+    return new Date(expireTimestamp * 1000).toLocaleDateString('fa-IR');
+}
+
+// Default Mock Data (Fallback)
+const MOCK_USER_DATA: UserData = {
   username: 'ZakiKam',
-  plan: 'اشتراک VIP نامحدود',
+  plan: 'VIP Premium', 
   status: 'active',
   usedTraffic: '303.9 MB',
   totalTraffic: '350.0 GB',
   usedPercentage: 0.1,
   expiryDate: '∞',
   daysRemaining: '∞',
-  supportLink: 'https://t.me/support', // Replace with actual support ID
-  channelLink: 'https://t.me/channel', // Replace with actual channel ID
+  supportLink: 'https://t.me/support',
+  channelLink: 'https://t.me/channel',
   subscriptionUrl: 'https://sub.lookavpn.com/api/v1/client/subscribe?token=c9662d7f-e82a-4d2b-9be5-26bc012a90f4',
-  userId: 'c9662d7f-e82a'
+  userId: 'c9662d7f-e82a',
+  whatsappLink: 'https://wa.me/123456789',
+  email: 'mailto:support@lookavpn.com',
+  phone: 'tel:+1234567890',
+  usageHistory24h: [
+    { time: '00:00', usage: 10 }, { time: '04:00', usage: 5 }, { time: '08:00', usage: 25 },
+    { time: '12:00', usage: 80 }, { time: '16:00', usage: 120 }, { time: '20:00', usage: 150 }, { time: '24:00', usage: 90 }
+  ],
+  usageHistory30d: [
+    { time: '1', usage: 500 }, { time: '5', usage: 800 }, { time: '10', usage: 1200 },
+    { time: '15', usage: 2000 }, { time: '20', usage: 1500 }, { time: '25', usage: 2500 }, { time: '30', usage: 3000 }
+  ]
 };
 
-export const CONFIGS: ConfigItem[] = [
-  {
-    id: '1',
-    name: 'کانال اطلاع رسانی | برای آپدیت کلیک کنید',
-    url: 'https://t.me/channel',
-    countryCode: 'ir' 
-  },
-  {
-    id: '3',
-    name: 'USA 3 | سرور اختصاصی',
-    countryCode: 'us',
-    url: 'vless://...',
-  },
-  {
-    id: '4',
-    name: 'GER | سرور آلمان',
-    countryCode: 'de',
-    url: 'vless://...',
-  },
-  {
-    id: '5',
-    name: 'ENG | سرور انگلیس',
-    countryCode: 'gb',
-    url: 'vless://...',
-  },
-  {
-    id: '6',
-    name: 'USA 1 | نیویورک',
-    countryCode: 'us',
-    url: 'vless://...',
-  },
-  {
-    id: '7',
-    name: 'USA 2 | کالیفرنیا',
-    countryCode: 'us',
-    url: 'vless://...',
-  },
-  {
-    id: '8',
-    name: 'NL 1 | آمستردام',
-    countryCode: 'nl',
-    url: 'vless://...',
-  },
-  {
-    id: '9',
-    name: 'NL 2 | هلند پلاس',
-    countryCode: 'nl',
-    url: 'vless://...',
-  },
-  {
-    id: '10',
-    name: 'GER 2 | برلین',
-    countryCode: 'de',
-    url: 'vless://...',
-  },
-  {
-    id: '11',
-    name: 'ENG 2 | لندن',
-    countryCode: 'gb',
-    url: 'vless://...',
-  }
+const MOCK_CONFIGS: ConfigItem[] = [
+  { id: '1', name: 'NEWS | اطلاع رسانی', url: 'https://t.me/channel', countryCode: 'ir' },
+  { id: '3', name: 'USA 3 | Dedicated', countryCode: 'us', url: 'vless://...' },
+  { id: '4', name: 'GER | Germany', countryCode: 'de', url: 'vless://...' },
+  { id: '5', name: 'ENG | England', countryCode: 'gb', url: 'vless://...' },
+  { id: '6', name: 'USA 1 | New York', countryCode: 'us', url: 'vless://...' },
+  { id: '7', name: 'USA 2 | California', countryCode: 'us', url: 'vless://...' },
+  { id: '8', name: 'NL 1 | Amsterdam', countryCode: 'nl', url: 'vless://...' },
+  { id: '9', name: 'NL 2 | NL Plus', countryCode: 'nl', url: 'vless://...' },
+  { id: '10', name: 'GER 2 | Berlin', countryCode: 'de', url: 'vless://...' },
+  { id: '11', name: 'ENG 2 | London', countryCode: 'gb', url: 'vless://...' }
+];
+
+// Data Processing Logic
+let activeUserData = MOCK_USER_DATA;
+let activeConfigs = MOCK_CONFIGS;
+
+if (typeof window !== 'undefined' && window.MARZBAN_DATA) {
+  const m = window.MARZBAN_DATA;
+  
+  // Status mapping
+  const statusMap: Record<string, 'active' | 'inactive'> = {
+    'active': 'active',
+    'on_hold': 'active',
+    'expired': 'inactive',
+    'limited': 'inactive',
+    'disabled': 'inactive'
+  };
+
+  const totalBytes = m.user.data_limit || 0;
+  const usedBytes = m.user.used_traffic || 0;
+  
+  activeUserData = {
+    ...MOCK_USER_DATA, // Preserve static support links from mock data
+    username: m.user.username,
+    status: statusMap[m.user.status] || 'inactive',
+    usedTraffic: formatBytes(usedBytes),
+    totalTraffic: totalBytes ? formatBytes(totalBytes) : '∞',
+    usedPercentage: totalBytes 
+      ? Math.min(100, Math.round((usedBytes / totalBytes) * 100))
+      : 0,
+    expiryDate: formatExpiryDate(m.user.expire),
+    daysRemaining: calculateDaysRemaining(m.user.expire),
+    subscriptionUrl: m.sub_url,
+    userId: m.sub_token || m.user.username,
+  };
+
+  activeConfigs = m.links.map((link, idx) => ({
+    id: String(idx),
+    name: link.remark,
+    url: link.url,
+    countryCode: '' // Default to no flag (globe icon)
+  }));
+}
+
+export const USER_DATA = activeUserData;
+export const CONFIGS = activeConfigs;
+
+// Tutorial Data Steps
+const androidTutorial = [
+    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+    { title: 'step2_title', description: 'step2_desc', icon: 'Plus' },
+    { title: 'step3_title', description: 'step3_desc', icon: 'Download' },
+    { title: 'step4_title', description: 'step4_desc', icon: 'Zap' },
+];
+
+const windowsTutorial = [
+    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+    { title: 'step2_title', description: 'step2_win_desc', icon: 'Monitor' },
+    { title: 'step3_title', description: 'step3_win_desc', icon: 'CheckSquare' },
+    { title: 'step4_title', description: 'step4_win_desc', icon: 'Zap' },
+];
+
+const iosTutorial = [
+    { title: 'step1_title', description: 'step1_desc', icon: 'Copy' },
+    { title: 'step2_title', description: 'step2_ios_desc', icon: 'Smartphone' },
+    { title: 'step3_title', description: 'step3_ios_desc', icon: 'Download' },
+    { title: 'step4_title', description: 'step4_ios_desc', icon: 'Zap' },
 ];
 
 export const OS_DATA: OsData[] = [
   {
     id: 'ios',
-    label: 'آی او اِس (iPhone)',
-    icon: React.createElement(Apple, { size: 20 }),
+    label: 'iOS / Mac',
+    icon: 'https://img.icons8.com/3d-fluency/94/mac-os.png',
     apps: [
-      { name: 'Streisand', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#' },
-      { name: 'FoXray', minOsVersion: 'iOS 16+', downloadLink: '#', addLink: '#' },
-      { name: 'v2Box', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#' },
-      { name: 'Shadowrocket', minOsVersion: 'iOS 12+', downloadLink: '#', addLink: '#' },
-      { name: 'Sing-Box', minOsVersion: 'iOS 15+', downloadLink: '#', addLink: '#' },
+      { id:'v2box', name: 'v2Box', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#', tutorialSteps: iosTutorial },
+      { id:'streisand', name: 'Streisand', minOsVersion: 'iOS 14+', downloadLink: '#', addLink: '#' },
+      { id:'foxray', name: 'FoXray', minOsVersion: 'iOS 16+', downloadLink: '#', addLink: '#' },
+      { id:'shadowrocket', name: 'Shadowrocket', minOsVersion: 'iOS 12+', downloadLink: '#', addLink: '#' },
     ]
   },
   {
     id: 'android',
-    label: 'اندروید (Android)',
-    icon: React.createElement(Smartphone, { size: 20 }),
+    label: 'Android',
+    icon: 'https://img.icons8.com/3d-fluency/94/android-os.png',
     apps: [
-      { name: 'v2rayNG', downloadLink: '#', addLink: '#' },
-      { name: 'NekoBox', downloadLink: '#', addLink: '#' },
-      { name: 'Sing-Box', downloadLink: '#', addLink: '#' },
+      { id:'v2rayng', name: 'v2rayNG', downloadLink: '#', addLink: '#', tutorialSteps: androidTutorial },
+      { id:'nekobox', name: 'NekoBox', downloadLink: '#', addLink: '#' },
+      { id:'singbox', name: 'Sing-Box', downloadLink: '#', addLink: '#' },
     ]
   },
   {
     id: 'windows',
-    label: 'ویندوز (Windows)',
-    icon: React.createElement(Monitor, { size: 20 }),
+    label: 'Windows',
+    icon: 'https://img.icons8.com/3d-fluency/94/windows-11.png',
     apps: [
-      { name: 'v2rayN', downloadLink: '#', addLink: '#' },
-      { name: 'Nekoray', downloadLink: '#', addLink: '#' },
-      { name: 'Clash Verge', downloadLink: '#', addLink: '#' },
+      { id:'v2rayn', name: 'v2rayN', downloadLink: '#', addLink: '#', tutorialSteps: windowsTutorial },
+      { id:'nekoray', name: 'Nekoray', downloadLink: '#', addLink: '#' },
+      { id:'clashverge', name: 'Clash Verge', downloadLink: '#', addLink: '#' },
     ]
   }
 ];
 
-export const FAQ_DATA: FAQItem[] = [
-  {
-    question: 'چگونه اشتراک خود را تمدید کنم؟',
-    answer: 'برای تمدید اشتراک، کافیست در بخش وضعیت اشتراک روی دکمه "تمدید اشتراک" کلیک کنید تا به پشتیبانی تلگرام متصل شوید.'
-  },
-  {
-    question: 'چگونه به سرویس متصل شوم؟',
-    answer: 'ابتدا نرم‌افزار مناسب سیستم عامل خود را از بخش "دانلود و اتصال" دریافت کنید. سپس لینک اشتراک یا یکی از کانفیگ‌ها را کپی کرده و در برنامه وارد کنید.'
-  },
-  {
-    question: 'چرا سرعتم کم شده است؟',
-    answer: 'ممکن است سروری که به آن متصل هستید شلوغ باشد. لطفا کانفیگ دیگری (مثلا از کشور دیگر) را امتحان کنید و حتما اشتراک خود را بروزرسانی کنید.'
-  },
-  {
-    question: 'آیا حجم مصرفی دقیق است؟',
-    answer: 'بله، نمودار مصرف به صورت آنی بروزرسانی می‌شود و دقیقاً مقدار ترافیک مصرف شده از بسته شما را نمایش می‌دهد.'
-  }
-];
+export const getFaqData = (lang: 'fa' | 'en'): FAQItem[] => {
+    if (lang === 'fa') {
+        return [
+            { question: 'چگونه اشتراک خود را تمدید کنم؟', answer: 'برای تمدید اشتراک، کافیست در بخش وضعیت اشتراک روی دکمه "تمدید اشتراک" کلیک کنید تا به پشتیبانی تلگرام متصل شوید.' },
+            { question: 'چگونه به سرویس متصل شوم؟', answer: 'ابتدا نرم‌افزار مناسب سیستم عامل خود را از بخش "دانلود و اتصال" دریافت کنید. سپس لینک اشتراک یا یکی از کانفیگ‌ها را کپی کرده و در برنامه وارد کنید.' },
+            { question: 'چرا سرعتم کم شده است؟', answer: 'ممکن است سروری که به آن متصل هستید شلوغ باشد. لطفا کانفیگ دیگری (مثلا از کشور دیگر) را امتحان کنید و حتما اشتراک خود را بروزرسانی کنید.' },
+            { question: 'آیا حجم مصرفی دقیق است؟', answer: 'بله، نمودار مصرف به صورت آنی بروزرسانی می‌شود و دقیقاً مقدار ترافیک مصرف شده از بسته شما را نمایش می‌دهد.' }
+        ];
+    } else {
+        return [
+            { question: 'How do I renew my subscription?', answer: 'To renew, simply click the "Renew Subscription" button in the Usage status section to contact support via Telegram.' },
+            { question: 'How do I connect?', answer: 'First, download the app for your OS from the "Download & Connect" section. Then copy the subscription link or one of the configs and add it to the app.' },
+            { question: 'Why is my speed slow?', answer: 'The server you are connected to might be busy. Please try another config (e.g., from a different country) and make sure to update your subscription.' },
+            { question: 'Is data usage accurate?', answer: 'Yes, the usage chart is updated in real-time and shows exactly how much data you have consumed from your plan.' }
+        ];
+    }
+}

@@ -1,45 +1,49 @@
+
 import React from 'react';
 import { ShieldCheck, Zap, Headphones, GlobeLock } from 'lucide-react';
+import { Language, translations } from '../translations';
 
-export const FeaturesSection: React.FC = () => {
+interface FeaturesSectionProps {
+  lang: Language;
+}
+
+export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ lang }) => {
+  const t = translations[lang];
+  
   const features = [
     {
       icon: <Zap size={24} />,
-      title: 'سرعت بی‌نهایت',
-      desc: 'اتصال پرسرعت و پایدار بدون افت کیفیت',
-      color: 'blue'
+      title: t.features.speed_title,
+      desc: t.features.speed_desc,
     },
     {
       icon: <ShieldCheck size={24} />,
-      title: 'امنیت تضمینی',
-      desc: 'رمزنگاری پیشرفته اطلاعات شما',
-      color: 'emerald'
+      title: t.features.security_title,
+      desc: t.features.security_desc,
     },
     {
       icon: <GlobeLock size={24} />,
-      title: 'آی‌پی ثابت',
-      desc: 'مناسب برای ترید و کارهای حساس',
-      color: 'violet'
+      title: t.features.ip_title,
+      desc: t.features.ip_desc,
     },
     {
       icon: <Headphones size={24} />,
-      title: 'پشتیبانی ۲۴/۷',
-      desc: 'پاسخگویی سریع در تمام ساعات شبانه‌روز',
-      color: 'amber'
+      title: t.features.support_title,
+      desc: t.features.support_desc,
     }
   ];
 
   return (
-    <div className="mb-16">
+    <div className="mb-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {features.map((item, index) => (
-                <div key={index} className="bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 p-4 rounded-2xl flex flex-col items-center text-center gap-3 backdrop-blur-sm hover:transform hover:-translate-y-1 transition-all duration-300 group shadow-sm hover:shadow-lg">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${item.color}-50 dark:bg-${item.color}-500/10 text-${item.color}-600 dark:text-${item.color}-400 group-hover:scale-110 transition-transform duration-300`}>
+                <div key={index} className="bg-spotify-elevated border border-white/5 p-6 rounded-2xl flex flex-col items-center text-center gap-4 hover:bg-white/5 transition-all duration-300 group">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center bg-black/40 text-spotify-green group-hover:scale-110 transition-transform duration-300 shadow-lg">
                         {item.icon}
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-800 dark:text-white text-sm mb-1">{item.title}</h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs leading-tight">{item.desc}</p>
+                        <h3 className="font-bold text-white text-sm mb-1">{item.title}</h3>
+                        <p className="text-spotify-subtext text-xs leading-tight font-medium">{item.desc}</p>
                     </div>
                 </div>
             ))}
