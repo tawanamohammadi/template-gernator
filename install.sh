@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-REPO="tawanamohammadi/marzban-sub"
+REPO="tawanamohammadi/template-gernator"
 TEMPLATE_NAME="looka-dashboard"
 INSTALL_DIR="/var/lib/marzban/templates"
 

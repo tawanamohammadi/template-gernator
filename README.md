@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/tawanamohammadi/marzban-sub/master/screenshots/banner.png" alt="Looka VPN Dashboard Banner" width="100%" />
+  <img src="https://raw.githubusercontent.com/tawanamohammadi/template-gernator/master/screenshots/banner.png" alt="Looka VPN Dashboard Banner" width="100%" />
 </div>
 
 <h1 align="center">Looka VPN Dashboard</h1>
@@ -39,12 +39,12 @@ You can easily install this template on your Marzban server using the provided i
 Run the following command on your server:
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/tawanamohammadi/marzban-sub/main/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/tawanamohammadi/template-gernator/main/install.sh)
 ```
 
 ### Manual Installation
 
-1. Download the latest `template.zip` from the [Releases](https://github.com/tawanamohammadi/marzban-sub/releases) page.
+1. Download the latest `template.zip` from the [Releases](https://github.com/tawanamohammadi/template-gernator/releases) page.
 2. Extract the contents to `/var/lib/marzban/templates/looka-dashboard`.
 3. Update your `.env` file in Marzban to point to this directory (if required by your setup) or simply select it in the panel settings if available.
 
@@ -54,8 +54,8 @@ To run this project locally for development or customization:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/tawanamohammadi/marzban-sub.git
-   cd marzban-sub
+   git clone https://github.com/tawanamohammadi/template-gernator.git
+   cd template-gernator
    ```
 
 2. **Install dependencies:**
