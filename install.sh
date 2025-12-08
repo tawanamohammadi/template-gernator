@@ -23,11 +23,15 @@ fi
 mkdir -p "$INSTALL_DIR/$TEMPLATE_NAME"
 
 # Get the latest release download URL
-echo -e "${BLUE}Fetching latest release...${NC}"
-LATEST_URL=$(curl -s https://api.github.com/repos/$REPO/releases/latest | grep "browser_download_url" | cut -d '"' -f 4)
+echo -e "${BLUE}Fetching latest release from $REPO...${NC}"
+API_URL="https://api.github.com/repos/$REPO/releases/latest"
+RELEASE_DATA=$(curl -s "$API_URL")
+LATEST_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url" | cut -d '"' -f 4)
 
 if [ -z "$LATEST_URL" ]; then
-    echo -e "${RED}Error: Could not find latest release. Make sure you have created a release in GitHub.${NC}"
+    echo -e "${RED}Error: Could not find latest release.${NC}"
+    echo -e "Debug Info: Tried to fetch from $API_URL"
+    # echo -e "Response: $RELEASE_DATA" # Uncomment for full debug
     exit 1
 fi
 
