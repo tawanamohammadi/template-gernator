@@ -1,82 +1,110 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/tawanamohammadi/template-gernator/master/screenshots/banner.png" alt="Looka VPN Dashboard Banner" width="100%" />
+  <h1>🚀 Looka VPN Dashboard</h1>
+  <p><strong>A premium, dark-themed subscription dashboard for Marzban Panel</strong></p>
+  
+  ![Dashboard Preview](https://raw.githubusercontent.com/tawanamohammadi/template-gernator/main/screenshots/dashboard.png)
 </div>
-
-<h1 align="center">Looka VPN Dashboard</h1>
-
-<p align="center">
-  <strong>A premium, dark-themed user dashboard template for Marzban Panel.</strong>
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#development">Development</a> •
-  <a href="#screenshots">Screenshots</a>
-</p>
 
 ---
 
 ## ✨ Features
 
-- **🎨 Modern Aesthetics:** Sleek dark mode design inspired by Spotify, featuring glassmorphism and smooth animations.
-- **🌍 Multi-Language Support:** Full support for **Persian (FA)** and **English (EN)** with automatic RTL/LTR adjustment.
-- **📱 Responsive & Mobile-First:** Perfectly optimized for all devices, from mobile phones to desktops.
+- **🎨 Modern Aesthetics:** Sleek dark mode design inspired by Spotify, featuring glassmorphism and smooth animations
+- **🌍 Multi-Language Support:** Full support for **Persian (FA)** and **English (EN)** with automatic RTL/LTR adjustment
+- **📱 Responsive & Mobile-First:** Perfectly optimized for all devices, from mobile phones to desktops
 - **⚡ Smart Config Management:**
-  - One-click copy for subscription links and configs.
-  - Automatic OS detection for tutorials.
-  - QR Code display for easy scanning.
-- **📥 Direct App Downloads:** Built-in direct download links for the latest stable VPN clients (v2rayNG, v2rayN, V2Box, etc.) for Android, iOS, and Windows.
-- **📊 User Stats:** Real-time display of usage, remaining traffic, and expiration date.
-- **🛠 Troubleshooting Guide:** Integrated FAQ and step-by-step connection tutorials.
+  - One-click copy for subscription links and configs
+  - Automatic OS detection for tutorials
+  - QR Code display for easy scanning
+- **📥 Direct App Downloads:** Built-in direct download links for the latest stable VPN clients (v2rayNG, v2rayN, V2Box, etc.)
+- **📊 User Stats:** Real-time display of usage, remaining traffic, and expiration date
+- **🛠 Troubleshooting Guide:** Integrated FAQ and step-by-step connection tutorials
+- **🔒 Fully Offline:** All assets bundled into a single HTML file (no external CDN dependencies)
 
-## 🚀 Installation
+## 🚀 Quick Installation
 
-You can easily install this template on your Marzban server using the provided installer script.
-
-### One-Command Installation
-
-Run the following command on your server:
+Run this command on your Marzban server:
 
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/tawanamohammadi/template-gernator/main/install.sh)
 ```
 
-### Manual Installation
+The installer will:
+1. Download the latest release
+2. Extract to `/var/lib/marzban/templates/looka-dashboard`
+3. Ready to use!
 
-1. Download the latest `template.zip` from the [Releases](https://github.com/tawanamohammadi/template-gernator/releases) page.
-2. Extract the contents to `/var/lib/marzban/templates/looka-dashboard`.
-3. Update your `.env` file in Marzban to point to this directory (if required by your setup) or simply select it in the panel settings if available.
+Then configure Marzban to use the template:
+```bash
+nano /opt/marzban/.env
+```
+
+Add or update:
+```env
+CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/looka-dashboard"
+```
+
+Restart Marzban:
+```bash
+marzban restart
+```
 
 ## 💻 Local Development
 
-To run this project locally for development or customization:
+```bash
+# Clone repository
+git clone https://github.com/tawanamohammadi/template-gernator.git
+cd template-gernator
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/tawanamohammadi/template-gernator.git
-   cd template-gernator
-   ```
+# Install dependencies
+npm install
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+# Start dev server
+npm run dev
+```
 
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-   Access the dashboard at `http://localhost:3000`.
+Access at `http://localhost:5173`
 
-   *Note: In development mode, the app uses mock data defined in `src/constants.ts` since it doesn't have access to Marzban's Jinja2 context.*
+*Note: Development mode uses mock data from `src/constants.ts`*
 
-## 📸 Screenshots
+## 🏗️ Build
 
-| Desktop View | Mobile View |
-|:---:|:---:|
-| <img src="https://via.placeholder.com/600x400?text=Desktop+Dashboard" alt="Desktop" /> | <img src="https://via.placeholder.com/300x600?text=Mobile+Dashboard" alt="Mobile" /> |
+```bash
+npm run build
+```
+
+Output: Single-file HTML in `dist/index.html` (~646KB, gzipped: ~191KB)
+
+## 📦 Tech Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Tailwind CSS v4** - Styling (fully bundled, no CDN)
+- **Vite** - Build tool
+- **Lucide React** - Icons
+- **Recharts** - Usage charts
+- **vite-plugin-singlefile** - Single HTML output
+
+## 🔄 Changelog
+
+### v1.0.8 (Latest)
+- ✅ Migrated to local Tailwind CSS (no external CDN dependencies)
+- ✅ Fixed black screen issue on filtered networks
+- ✅ Improved build performance
+- ✅ Single-file output with all assets inlined
+
+[View full changelog](./CHANGELOG.md)
+
+## 📝 License
+
+MIT License - Free to use and modify
+
+---
 
 <div align="center">
   <p>Made with ❤️ for the Free Internet</p>
+  <p>
+    <a href="https://github.com/tawanamohammadi/template-gernator/issues">Report Bug</a> •
+    <a href="https://github.com/tawanamohammadi/template-gernator/releases">Releases</a>
+  </p>
 </div>
